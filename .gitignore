@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+instance/
+.env
+uploads/
+users.db
+*.log
+init_db.py
