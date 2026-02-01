@@ -7,3 +7,5 @@ werkzeug
 beautifulsoup4
 requests
 lxml
+gunicorn
+psycopg2-binary
