@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+{% block title %}LinkedIn Profile Analyzer{% endblock %}
+{% block content %}
+<div class="linkedin-header">
+    <div class="header-logo">
+        <img src="{{ url_for('static', filename='images/linkedin_logo.png') }}" alt="LinkedIn" class="linkedin-logo">
+    </div>
+    <h1>LinkedIn Profile Analyzer</h1>
+    <p class="subtitle">Get professional-grade feedback on your LinkedIn profile from URL or manual input</p>
+</div>
+
+<div class="linkedin-card">
+    <div class="card-icon">
+        <img src="{{ url_for('static', filename='images/linkedin_logo.png') }}" alt="LinkedIn"
+            style="width: 60px; height: 60px; border-radius: 8px;">
+    </div>
+    <h2>Analyze Your LinkedIn Profile</h2>
+    <p>Enter your LinkedIn profile URL and we'll provide comprehensive analysis with ratings, keyword suggestions, and
+        actionable improvements.</p>
+
+    <form method="POST" action="{{ url_for('linkedin.analyze') }}" class="linkedin-form">
+        <!-- LinkedIn URL Input -->
+        <div class="form-group">
+            <label for="linkedin_url">🔗 LinkedIn Profile URL</label>
+            <input type="url" name="linkedin_url" id="linkedin_url"
+                placeholder="https://www.linkedin.com/in/your-profile" class="linkedin-url-input">
+            <div class="help-text">
+                📌 Example: https://www.linkedin.com/in/john-doe-123456
+                <br>
+                <small>Note: Profile must be public (visible when logged out) for automatic scraping to work.</small>
+            </div>
+        </div>
+
+        <div class="divider-text">
+            <span>OR manually enter your information below</span>
+        </div>
+
+        <!-- Manual Input Fields -->
+        <div class="manual-inputs" id="manualInputs">
+            <div class="form-group">
+                <label for="headline">📝 Your LinkedIn Headline</label>
+                <input type="text" name="headline" id="headline"
+                    placeholder="e.g., Software Engineer | Python, AWS, React | Building scalable applications"
+                    maxlength="220">
+                <div class="char-count">
+                    <span id="headlineCount">0</span> / 220 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="about">📄 About / Summary Section</label>
+                <textarea name="about" id="about" rows="8"
+                    placeholder="Paste your LinkedIn About/Summary section here...&#10;&#10;Include your professional story, key achievements, and what you're passionate about."></textarea>
+                <div class="char-count">
+                    <span id="aboutCount">0</span> words
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="current_role">💼 Current Role</label>
+                    <input type="text" name="current_role" id="current_role"
+                        placeholder="e.g., Software Engineer, Product Manager">
+                </div>
+
+                <div class="form-group">
+                    <label for="industry">🏢 Industry</label>
+                    <input type="text" name="industry" id="industry"
+                        placeholder="e.g., Technology, Healthcare, Finance">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <span>🔍</span> Analyze My Profile
+        </button>
+    </form>
+</div>
+
+<div class="features-grid">
+    <div class="feature-item">
+        <span class="feature-icon">⭐</span>
+        <h3>Overall Rating</h3>
+        <p>Get a score out of 10 based on profile strength</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">📊</span>
+        <h3>Section Analysis</h3>
+        <p>Detailed feedback on each profile section</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <h3>Keywords</h3>
+        <p>Industry-specific keywords to add</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">💡</span>
+        <h3>Action Items</h3>
+        <p>Specific improvements to implement</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">📈</span>
+        <h3>Industry Position</h3>
+        <p>See how you compare to peers</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">🎓</span>
+        <h3>Expert Guidance</h3>
+        <p>Motivational summary with next steps</p>
+    </div>
+</div>
+
+<div class="back-section">
+    <a href="{{ url_for('dashboard.dashboard') }}" class="btn-secondary">← Back to Dashboard</a>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="flash-messages">
+    {% for message in messages %}
+    <div class="flash-message">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<script>
+    // Character counting
+    const headline = document.getElementById('headline');
+    const headlineCount = document.getElementById('headlineCount');
+    const about = document.getElementById('about');
+    const aboutCount = document.getElementById('aboutCount');
+
+    headline.addEventListener('input', function () {
+        headlineCount.textContent = this.value.length;
+    });
+
+    about.addEventListener('input', function () {
+        const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+        aboutCount.textContent = words;
+    });
+
+    // Form validation
+    const form = document.querySelector('.linkedin-form');
+    form.addEventListener('submit', function (e) {
+        const urlValue = document.getElementById('linkedin_url').value.trim();
+        const headlineValue = headline.value.trim();
+        const aboutValue = about.value.trim();
+
+        if (!urlValue && !headlineValue && !aboutValue) {
+            e.preventDefault();
+            alert('Please provide either a LinkedIn URL or manually enter your headline and about section.');
+            return false;
+        }
+    });
+</script>
+
+<style>
+    .header-logo {
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .linkedin-logo {
+        width: 100px;
+        height: 100px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(10, 102, 194, 0.3);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .linkedin-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .linkedin-header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .linkedin-card {
+        background: var(--card-bg);
+        border-radius: 24px;
+        padding: 2.5rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .card-icon {
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .linkedin-card h2 {
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .linkedin-card>p {
+        text-align: center;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .linkedin-form {
+        max-width: 100%;
+    }
+
+    .linkedin-url-input {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        border-radius: 12px;
+        border: 2px solid rgba(var(--primary-rgb), 0.3);
+        background: rgba(255, 255, 255, 0.05);
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+    }
+
+    .linkedin-url-input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .help-text {
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .divider-text {
+        text-align: center;
+        margin: 2rem 0;
+        position: relative;
+    }
+
+    .divider-text::before,
+    .divider-text::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        width: 40%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .divider-text::before {
+        left: 0;
+    }
+
+    .divider-text::after {
+        right: 0;
+    }
+
+    .divider-text span {
+        background: var(--card-bg);
+        padding: 0 1rem;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .manual-inputs {
+        margin-top: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .char-count {
+        text-align: right;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+
+    .back-section {
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+
+        .linkedin-header h1 {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}

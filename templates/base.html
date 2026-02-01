@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark-purple">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Resume Analyzer{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='mascot.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Theme Switcher Button -->
+    <button class="theme-button" id="theme-button" onclick="toggleThemeSelector()" title="Change Theme">
+        🎨
+    </button>
+
+    <!-- Theme Selector Dropdown -->
+    <div class="theme-selector" id="theme-selector">
+        <!-- Theme options will be dynamically added by theme.js -->
+    </div>
+
+    <!-- Theme Transition Overlay -->
+    <div class="theme-transition-overlay" id="theme-transition-overlay"></div>
+
+    <!-- Fox Yokai Mascot -->
+    <div class="mascot-container">
+        <img src="{{ url_for('static', filename='images/fox_standing.png') }}" alt="Fox Yokai Mascot" class="mascot">
+        <div class="mascot-speech-bubble">
+            <span class="bubble-text">Hi! Hover over different sections to learn more!</span>
+        </div>
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Theme Script -->
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='mascot.js') }}"></script>
+</body>
+
+</html>

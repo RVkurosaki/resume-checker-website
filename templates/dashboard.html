@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="dashboard-header">
+    <h1>📄 AI Resume Analyzer</h1>
+    <p class="subtitle">Get AI-powered insights to improve your resume</p>
+</div>
+
+<div class="upload-card">
+    <div class="upload-icon">📁</div>
+    <h2>Upload Your Resume</h2>
+    <p>Upload your PDF resume and select your target job role for personalized analysis</p>
+
+    <form method="POST" action="{{ url_for('resume.upload_resume') }}" enctype="multipart/form-data"
+        class="upload-form">
+        <div class="form-group">
+            <label for="resume" class="file-label">
+                <span class="file-icon">📎</span>
+                <span class="file-text">Choose PDF file</span>
+                <input type="file" name="resume" id="resume" accept=".pdf" required>
+            </label>
+            <div class="file-info">
+                <span class="file-name" id="fileName">No file selected</span>
+                <button type="button" class="btn-clear-file" id="clearFile" style="display: none;">✕ Clear</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="job_role">🎯 Target Job Role</label>
+            <select name="job_role" id="job_role" required>
+                {% for role in job_roles %}
+                <option value="{{ role.id }}">{{ role.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <span>🔍</span> Analyze Resume
+        </button>
+    </form>
+</div>
+
+<div class="features-grid">
+    <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <h3>Skill Detection</h3>
+        <p>AI identifies your skills automatically</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">📊</span>
+        <h3>ATS Score</h3>
+        <p>See how your resume ranks</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">✍️</span>
+        <h3>Grammar Check</h3>
+        <p>Improve your writing</p>
+    </div>
+    <div class="feature-item">
+        <span class="feature-icon">🎯</span>
+        <h3>Job Match</h3>
+        <p>Compare with job requirements</p>
+    </div>
+</div>
+
+<div class="linkedin-cta-card">
+    <div class="cta-icon">
+        <img src="{{ url_for('static', filename='images/linkedin_logo.png') }}" alt="LinkedIn"
+            style="width: 80px; height: 80px; border-radius: 12px;">
+    </div>
+    <h2>LinkedIn Profile Analyzer</h2>
+    <p>Get professional-grade feedback on your LinkedIn profile with detailed ratings, keyword suggestions, and
+        actionable improvements</p>
+    <a href="{{ url_for('linkedin.index') }}" class="btn-cta">
+        <span>🔍</span> Analyze LinkedIn Profile
+    </a>
+</div>
+
+<style>
+    .linkedin-cta-card {
+        background: linear-gradient(135deg, rgba(10, 102, 194, 0.2), rgba(0, 119, 181, 0.2));
+        border: 2px solid rgba(10, 102, 194, 0.4);
+        border-radius: 24px;
+        padding: 2.5rem;
+        text-align: center;
+        margin: 2rem 0;
+        box-shadow: 0 8px 32px rgba(10, 102, 194, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .linkedin-cta-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(10, 102, 194, 0.25);
+    }
+
+    .cta-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .linkedin-cta-card h2 {
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+    }
+
+    .linkedin-cta-card p {
+        color: var(--text-muted);
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+
+    .btn-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2rem;
+        background: linear-gradient(135deg, #0a66c2, #0077b5);
+        color: white;
+        text-decoration: none;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(10, 102, 194, 0.3);
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(10, 102, 194, 0.4);
+    }
+</style>
+
+<div class="logout-section">
+    <a href="{{ url_for('auth.logout') }}" class="btn-logout">Logout</a>
+</div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="flash-messages">
+    {% for message in messages %}
+    <div class="flash-message">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<script>
+    const fileInput = document.getElementById('resume');
+    const fileName = document.getElementById('fileName');
+    const fileText = document.querySelector('.file-text');
+    const clearBtn = document.getElementById('clearFile');
+
+    // Handle file selection
+    fileInput.addEventListener('change', function (e) {
+        if (e.target.files[0]) {
+            const name = e.target.files[0].name;
+            fileName.textContent = name;
+            fileText.textContent = name;
+            clearBtn.style.display = 'inline-block';
+            fileName.style.color = 'var(--text-primary)';
+        } else {
+            resetFileInput();
+        }
+    });
+
+    // Handle clear button click
+    clearBtn.addEventListener('click', function () {
+        resetFileInput();
+    });
+
+    function resetFileInput() {
+        fileInput.value = '';
+        fileName.textContent = 'No file selected';
+        fileText.textContent = 'Choose PDF file';
+        clearBtn.style.display = 'none';
+        fileName.style.color = 'var(--text-muted)';
+    }
+
+    // Handle LinkedIn section toggle
+    const linkedInToggle = document.getElementById('includeLinkedIn');
+    const linkedInFields = document.getElementById('linkedInFields');
+
+    linkedInToggle.addEventListener('change', function () {
+        if (this.checked) {
+            linkedInFields.style.display = 'block';
+        } else {
+            linkedInFields.style.display = 'none';
+        }
+    });
+</script>
+{% endblock %}

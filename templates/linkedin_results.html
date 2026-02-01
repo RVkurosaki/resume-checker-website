@@ -1,0 +1,642 @@
+{% extends "base.html" %}
+{% block title %}LinkedIn Analysis Results{% endblock %}
+{% block content %}
+
+<!-- Hero Section - Overall Rating -->
+<div class="results-hero">
+    <div class="results-header-logo">
+        <img src="{{ url_for('static', filename='images/linkedin_logo.png') }}" alt="LinkedIn"
+            class="linkedin-logo-small">
+    </div>
+    <h1>LinkedIn Profile Analysis</h1>
+    {% if analysis.profile_name and analysis.profile_name != 'Your Profile' %}
+    <p class="profile-name">{{ analysis.profile_name }}</p>
+    {% endif %}
+
+    <div class="rating-display">
+        <div
+            class="rating-circle {% if analysis.overall_rating >= 8 %}rating-excellent{% elif analysis.overall_rating >= 6 %}rating-good{% elif analysis.overall_rating >= 4 %}rating-fair{% else %}rating-poor{% endif %}">
+            <span class="rating-number">{{ analysis.overall_rating }}</span>
+            <span class="rating-max">/10</span>
+        </div>
+        <div class="rating-info">
+            <h2>
+                {% if analysis.overall_rating >= 8 %}
+                Excellent Profile! 🌟
+                {% elif analysis.overall_rating >= 6 %}
+                Good Profile! 👍
+                {% elif analysis.overall_rating >= 4 %}
+                Room for Improvement 📈
+                {% else %}
+                Needs Attention 🚀
+                {% endif %}
+            </h2>
+            <p>You're in the <strong>top {{ 100 - analysis.percentile_rank }}%</strong> of professionals</p>
+            <p class="visibility-boost">🚀 Potential visibility increase: <strong>{{ analysis.visibility_multiplier
+                    }}x</strong></p>
+        </div>
+    </div>
+
+    <div class="summary-box">
+        <p>{{ analysis.summary }}</p>
+    </div>
+</div>
+
+<!-- Score Cards -->
+<div class="scores-grid">
+    <div class="score-metric">
+        <div class="metric-icon">📊</div>
+        <div class="metric-value">{{ analysis.profile_score }}/100</div>
+        <div class="metric-label">Profile Score</div>
+    </div>
+    <div class="score-metric">
+        <div class="metric-icon">📝</div>
+        <div class="metric-value">{{ analysis.headline_score }}/100</div>
+        <div class="metric-label">Headline Quality</div>
+    </div>
+    <div class="score-metric">
+        <div class="metric-icon">✍️</div>
+        <div class="metric-value">{{ analysis.about_score }}/100</div>
+        <div class="metric-label">About Section</div>
+    </div>
+    <div class="score-metric">
+        <div class="metric-icon">👁️</div>
+        <div class="metric-value">{{ analysis.visibility_score }}/100</div>
+        <div class="metric-label">Visibility Score</div>
+    </div>
+</div>
+
+<!-- Section-by-Section Feedback -->
+<div class="analysis-section">
+    <h2>📋 Section-by-Section Feedback</h2>
+    <p class="section-subtitle">Detailed analysis of each profile section</p>
+
+    <div class="sections-container">
+        {% for section_name, section_data in analysis.section_feedback.items() %}
+        <div class="section-card">
+            <div class="section-header">
+                <h3>
+                    {% if section_name == 'headline' %}📝 Headline
+                    {% elif section_name == 'about' %}✍️ About / Summary
+                    {% elif section_name == 'experience' %}💼 Experience
+                    {% elif section_name == 'education' %}🎓 Education
+                    {% elif section_name == 'skills' %}🎯 Skills
+                    {% endif %}
+                </h3>
+                <div class="section-rating {{ section_data.rating|lower|replace(' ', '-') }}">
+                    {{ section_data.score }}/100 - {{ section_data.rating }}
+                </div>
+            </div>
+            <div class="section-body">
+                <p class="section-feedback">{{ section_data.feedback }}</p>
+                <div class="section-details">
+                    <div class="detail-item strength">
+                        <strong>✅ Strength:</strong> {{ section_data.strength }}
+                    </div>
+                    <div class="detail-item improvement">
+                        <strong>💡 Improvement:</strong> {{ section_data.improvement }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Keyword Optimization -->
+<div class="analysis-section">
+    <h2>🎯 Keyword Optimization</h2>
+    <p class="section-subtitle">Add these keywords to improve search visibility</p>
+
+    <div class="keywords-container">
+        <h3>Recommended Keywords to Add:</h3>
+        <div class="keyword-chips">
+            {% for keyword in analysis.keyword_suggestions %}
+            <span class="keyword-chip">{{ keyword }}</span>
+            {% endfor %}
+        </div>
+
+        <div class="keyword-tip">
+            <strong>💡 Pro Tip:</strong> Incorporate these keywords naturally throughout your headline, about section,
+            and experience descriptions. This can increase your profile views by 2-3x!
+        </div>
+    </div>
+</div>
+
+<!-- Sample Content -->
+{% if analysis.sample_headlines %}
+<div class="analysis-section">
+    <h2>✨ Sample Content</h2>
+    <p class="section-subtitle">Use these examples as inspiration</p>
+
+    <div class="samples-grid">
+        <div class="sample-box">
+            <h3>Sample Headlines</h3>
+            {% for headline in analysis.sample_headlines %}
+            <div class="sample-item">
+                <span class="sample-number">{{ loop.index }}</span>
+                <span class="sample-text">{{ headline }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="sample-box">
+            <h3>About Section Structure</h3>
+            {% for point in analysis.sample_summary_points %}
+            <div class="sample-item">
+                <span class="sample-bullet">•</span>
+                <span class="sample-text">{{ point }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Actionable Improvements -->
+<div class="analysis-section">
+    <h2>💪 Actionable Improvements</h2>
+    <p class="section-subtitle">Specific steps to optimize your profile</p>
+
+    <div class="improvements-list">
+        {% for improvement in analysis.actionable_improvements %}
+        <div class="improvement-item">
+            <span class="improvement-number">{{ loop.index }}</span>
+            <span class="improvement-text">{{ improvement }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Industry Positioning -->
+<div class="analysis-section positioning-section">
+    <h2>📈 Industry Positioning</h2>
+    {{ analysis.industry_positioning|safe }}
+</div>
+
+<!-- Final Motivational Summary -->
+<div class="analysis-section final-summary-section">
+    {{ analysis.final_summary|safe }}
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+    <a href="{{ url_for('linkedin.index') }}" class="btn-primary">
+        🔄 Analyze Another Profile
+    </a>
+    <a href="{{ url_for('dashboard.dashboard') }}" class="btn-secondary">
+        📊 Back to Dashboard
+    </a>
+</div>
+
+<style>
+    .results-header-logo {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .linkedin-logo-small {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(10, 102, 194, 0.3);
+        background-color: white;
+        padding: 8px;
+    }
+
+    .results-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.1), rgba(var(--secondary-rgb), 0.1));
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .results-hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-name {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .rating-display {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 3rem;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+    }
+
+    .rating-circle {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        position: relative;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    .rating-excellent {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+
+    .rating-good {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+    }
+
+    .rating-fair {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+
+    .rating-poor {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+
+    .rating-number {
+        font-size: 4rem;
+        line-height: 1;
+    }
+
+    .rating-max {
+        font-size: 1.5rem;
+        opacity: 0.8;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .rating-info {
+        text-align: left;
+    }
+
+    .rating-info h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .rating-info p {
+        font-size: 1.1rem;
+        margin: 0.5rem 0;
+    }
+
+    .visibility-boost {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+
+    .summary-box {
+        max-width: 800px;
+        margin: 2rem auto 0;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .scores-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+
+    .score-metric {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .score-metric:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .metric-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .metric-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .metric-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+    }
+
+    .analysis-section {
+        background: var(--card-bg);
+        padding: 2.5rem;
+        border-radius: 24px;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .analysis-section h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .section-subtitle {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+    }
+
+    .sections-container {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .section-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .section-header h3 {
+        font-size: 1.3rem;
+        margin: 0;
+    }
+
+    .section-rating {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .section-rating.excellent {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .section-rating.good {
+        background: rgba(59, 130, 246, 0.2);
+        color: #3b82f6;
+    }
+
+    .section-rating.needs-improvement,
+    .section-rating.needs-expansion,
+    .section-rating.limited,
+    .section-rating.incomplete,
+    .section-rating.insufficient {
+        background: rgba(245, 158, 11, 0.2);
+        color: #f59e0b;
+    }
+
+    .section-rating.complete {
+        background: rgba(16, 185, 129, 0.2);
+        color: #10b981;
+    }
+
+    .section-feedback {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .section-details {
+        display: grid;
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+
+    .detail-item {
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.02);
+    }
+
+    .detail-item.strength {
+        border-left: 3px solid #10b981;
+    }
+
+    .detail-item.improvement {
+        border-left: 3px solid var(--accent-color);
+    }
+
+    .keywords-container h3 {
+        margin-bottom: 1rem;
+    }
+
+    .keyword-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .keyword-chip {
+        background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.2), rgba(var(--secondary-rgb), 0.2));
+        color: var(--text-primary);
+        padding: 0.6rem 1.2rem;
+        border-radius: 20px;
+        font-weight: 500;
+        border: 1px solid rgba(var(--primary-rgb), 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .keyword-chip:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.3);
+    }
+
+    .keyword-tip {
+        background: rgba(var(--accent-rgb), 0.1);
+        padding: 1.25rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--accent-color);
+    }
+
+    .samples-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .sample-box {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sample-box h3 {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(var(--primary-rgb), 0.3);
+    }
+
+    .sample-item {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 8px;
+    }
+
+    .sample-number {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: bold;
+    }
+
+    .sample-bullet {
+        color: var(--primary-color);
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .sample-text {
+        flex: 1;
+        line-height: 1.5;
+    }
+
+    .improvements-list {
+        display: grid;
+        gap: 1rem;
+    }
+
+    .improvement-item {
+        display: flex;
+        gap: 1.5rem;
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .improvement-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        transform: translateX(5px);
+    }
+
+    .improvement-number {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+
+    .improvement-text {
+        flex: 1;
+        line-height: 1.6;
+    }
+
+    .positioning-section,
+    .final-summary-section {
+        background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.05), rgba(var(--secondary-rgb), 0.05));
+    }
+
+    .positioning-section h2,
+    .positioning-section h3 {
+        color: var(--text-primary);
+    }
+
+    .positioning-section ul,
+    .final-summary-section ul {
+        margin-left: 1.5rem;
+        line-height: 1.8;
+    }
+
+    .final-summary-section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .final-summary-section h3 {
+        font-size: 1.5rem;
+        margin: 1.5rem 0 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        margin: 3rem 0;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .rating-display {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .rating-info {
+            text-align: center;
+        }
+
+        .rating-circle {
+            width: 150px;
+            height: 150px;
+        }
+
+        .rating-number {
+            font-size: 3rem;
+        }
+
+        .results-hero h1 {
+            font-size: 2rem;
+        }
+
+        .samples-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+{% endblock %}

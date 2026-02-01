@@ -1,0 +1,38 @@
+
+🔍 Starting automated session test...
+
+NOTE: Update the username and password in the script if different
+
+============================================================
+STEP 1: Testing Login
+============================================================
+✓ Login page accessible: 200
+Login response status: 302
+Login response headers: {'Server': 'Werkzeug/3.1.5 Python/3.14.2', 'Date': 'Sun, 01 Feb 2026 02:45:06 GMT', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '209', 'Location': '/dashboard/', 'Vary': 'Cookie', 'Set-Cookie': 'session=eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyX2lkIjo1fQ.aX6-Mg.EWjrYAFxpbgToPq5hH3fbVNHrkk; Expires=Mon, 02 Feb 2026 02:45:06 GMT; HttpOnly; Path=/; SameSite=Lax', 'Connection': 'close'}
+Cookies after login: {'session': 'eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyX2lkIjo1fQ.aX6-Mg.EWjrYAFxpbgToPq5hH3fbVNHrkk'}
+✓ Login redirected to: /dashboard/
+✓ Login successful - redirecting to dashboard
+
+============================================================
+STEP 2: Testing Dashboard Access
+============================================================
+Dashboard response status: 200
+Cookies: {'session': 'eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyX2lkIjo1fQ.aX6-NA.zYg2WP2cwoF0d4thOfBTbPkcW-A'}
+✓ Dashboard accessible - session is working!
+
+============================================================
+STEP 3: Testing File Upload
+============================================================
+✓ Created test PDF: test_resume.pdf
+Cookies before upload: {'session': 'eyJfcGVybWFuZW50Ijp0cnVlLCJ1c2VyX2lkIjo1fQ.aX6-NA.zYg2WP2cwoF0d4thOfBTbPkcW-A'}
+Upload response status: 302
+Upload response headers: {'Server': 'Werkzeug/3.1.5 Python/3.14.2', 'Date': 'Sun, 01 Feb 2026 02:45:10 GMT', 'Content-Type': 'text/html; charset=utf-8', 'Content-Length': '209', 'Location': '/dashboard/', 'Vary': 'Cookie', 'Set-Cookie': 'session=.eJwFwbsKwzAMBdBfEZpNti5eWzpnD8GY-ro1-FEkGVJC_r3nnBxyjfqBst9OJmO_cYNqfIMd38esifowwmESX0aGwyjLaLQ-ngutFVFBJj-KlErOEHSjXCoW3q_dcfhCWuzoxt5kwvFUSCiJ_e36A9uKK88.aX6-Ng.Z8KbkttNL88ih6fSJ_r_nlXU2YE; Expires=Mon, 02 Feb 2026 02:45:10 GMT; HttpOnly; Path=/; SameSite=Lax', 'Connection': 'close'}
+Cookies after upload: {'session': '.eJwFwbsKwzAMBdBfEZpNti5eWzpnD8GY-ro1-FEkGVJC_r3nnBxyjfqBst9OJmO_cYNqfIMd38esifowwmESX0aGwyjLaLQ-ngutFVFBJj-KlErOEHSjXCoW3q_dcfhCWuzoxt5kwvFUSCiJ_e36A9uKK88.aX6-Ng.Z8KbkttNL88ih6fSJ_r_nlXU2YE'}
+Redirected to: /dashboard/
+✗ Unexpected redirect: /dashboard/
+
+✓ Cleaned up test PDF
+
+============================================================
+TEST COMPLETE
+============================================================

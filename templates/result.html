@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+{% block title %}Analysis Results{% endblock %}
+{% block content %}
+<div class="results-header">
+    <h1>📊 Resume Analysis Results</h1>
+    <p class="subtitle">AI-powered analysis for <strong>{{ analysis.job_role_title }}</strong> position</p>
+</div>
+
+<!-- Summary Card -->
+<div class="summary-card">
+    <p>{{ analysis.summary }}</p>
+</div>
+
+<!-- Scores Row -->
+<div class="scores-row">
+    <!-- ATS Score -->
+    <div class="score-card">
+        <div
+            class="score-circle {% if analysis.ats_score >= 70 %}score-high{% elif analysis.ats_score >= 50 %}score-medium{% else %}score-low{% endif %}">
+            <span class="score-value">{{ analysis.ats_score }}</span>
+            <span class="score-label">/ 100</span>
+        </div>
+        <h3>📈 ATS Score</h3>
+        <p>Applicant Tracking System compatibility</p>
+    </div>
+
+    <!-- Job Match -->
+    <div class="score-card">
+        <div
+            class="score-circle {% if analysis.job_match_percent >= 70 %}score-high{% elif analysis.job_match_percent >= 50 %}score-medium{% else %}score-low{% endif %}">
+            <span class="score-value">{{ analysis.job_match_percent }}</span>
+            <span class="score-label">%</span>
+        </div>
+        <h3>🎯 Job Match</h3>
+        <p>Match with {{ analysis.job_role_title }} requirements</p>
+    </div>
+</div>
+
+<!-- Skills Section -->
+<div class="analysis-card">
+    <h2>💡 Skill Detection</h2>
+    <div class="skills-section">
+        <div class="skills-group">
+            <h4>✅ Detected Skills</h4>
+            <div class="skill-chips">
+                {% for skill in analysis.detected_skills %}
+                <span class="skill-chip skill-found">{{ skill }}</span>
+                {% endfor %}
+                {% if not analysis.detected_skills %}
+                <span class="skill-chip skill-none">No skills detected</span>
+                {% endif %}
+            </div>
+        </div>
+        <div class="skills-group">
+            <h4>❌ Missing Skills for {{ analysis.job_role_title }}</h4>
+            <div class="skill-chips">
+                {% if analysis.missing_skills and analysis.missing_skills|length > 0 %}
+                {% for skill in analysis.missing_skills %}
+                {% if 'all required skills present' in skill.lower() or 'none' in skill.lower() %}
+                <span class="skill-chip skill-found">✅ {{ skill }}</span>
+                {% else %}
+                <span class="skill-chip skill-missing">{{ skill }}</span>
+                {% endif %}
+                {% endfor %}
+                {% else %}
+                <span class="skill-chip skill-found">✅ All required skills present - Great job!</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ATS Feedback -->
+<div class="analysis-card">
+    <h2>📊 ATS Feedback</h2>
+    <ul class="feedback-list">
+        {% for item in analysis.ats_feedback %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Grammar Improvements -->
+<div class="analysis-card">
+    <h2>✍️ Grammar & Language Improvements</h2>
+    <div class="grammar-section">
+        {% for issue in analysis.grammar_issues %}
+        <div class="grammar-item">
+            <div class="grammar-original">
+                <span class="label">❌ Original:</span>
+                <span class="text">"{{ issue.original }}"</span>
+            </div>
+            <div class="grammar-corrected">
+                <span class="label">✅ Improved:</span>
+                <span class="text">"{{ issue.corrected }}"</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Improvement Suggestions -->
+<div class="analysis-card suggestions-card">
+    <h2>💪 Improvement Suggestions</h2>
+    <div class="suggestions-list">
+        {% for suggestion in analysis.suggestions %}
+        <div class="suggestion-item">
+            <span class="suggestion-number">{{ loop.index }}</span>
+            <span class="suggestion-text">{{ suggestion }}</span>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Interview Preparation Section -->
+<div class="analysis-card interview-section">
+    <h2>🎯 Interview Preparation for {{ analysis.job_role_title }}</h2>
+    <p class="section-subtitle">Get ready for your interview with expert tips and common questions</p>
+
+    <div class="interview-content">
+        <!-- Preparation Tips -->
+        <div class="interview-card">
+            <h3>💡 Preparation Tips</h3>
+            <ul class="feedback-list">
+                {% for tip in analysis.interview_tips.tips %}
+                <li>{{ tip }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Common Questions -->
+        <div class="interview-card">
+            <h3>❓ Common Interview Questions</h3>
+            <div class="questions-list">
+                {% for question in analysis.interview_tips.questions %}
+                <div class="question-item">
+                    <span class="question-number">Q{{ loop.index }}</span>
+                    <span class="question-text">{{ question }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="action-buttons">
+    <a href="{{ url_for('dashboard.dashboard') }}" class="btn-primary">
+        📄 Analyze Another Resume
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="btn-secondary">
+        Logout
+    </a>
+</div>
+
+{% endblock %}

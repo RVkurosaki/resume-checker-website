@@ -1,0 +1,117 @@
+/* ===== Fox Yokai Mascot ===== */
+.mascot-container {
+    position: fixed;
+    top: 80px;
+    left: 20px;
+    z-index: 999;
+    cursor: pointer;
+    animation: float 3s ease-in-out infinite;
+}
+
+.mascot {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease, opacity 0.2s ease;
+    background: transparent;
+    background-color: transparent;
+    mix-blend-mode: normal;
+}
+
+.mascot-container:hover .mascot {
+    transform: scale(1.1) rotate(-5deg);
+    animation: wave 0.5s ease-in-out infinite;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes wave {
+
+    0%,
+    100% {
+        transform: rotate(-5deg) scale(1.1);
+    }
+
+    50% {
+        transform: rotate(5deg) scale(1.1);
+    }
+}
+
+/* Mascot Speech Bubble */
+.mascot-speech-bubble {
+    position: absolute;
+    top: 0;
+    left: 120px;
+    background: white;
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    pointer-events: none;
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-width: 200px;
+    max-width: 350px;
+}
+
+.mascot-speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 30px;
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-right: 10px solid white;
+}
+
+.bubble-text {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Responsive mascot */
+@media (max-width: 768px) {
+    .mascot-container {
+        top: 70px;
+        left: 10px;
+    }
+
+    .mascot {
+        width: 70px;
+        height: 70px;
+    }
+
+    .mascot-speech-bubble {
+        left: 80px;
+        font-size: 0.75rem;
+        padding: 8px 12px;
+        max-width: 200px;
+    }
+}
+
+/* Hide on very small screens to avoid clutter */
+@media (max-width: 480px) {
+    .mascot-speech-bubble {
+        font-size: 0.7rem;
+        max-width: 150px;
+    }
+}

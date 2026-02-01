@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% block title %}Analyzing...{% endblock %}
+{% block content %}
+
+<!-- Hide default mascot on loading page -->
+<style>
+    .mascot-container {
+        display: none !important;
+    }
+</style>
+
+<!-- Running Fox Mascot for Loading Page -->
+<div class="running-mascot-container">
+    <img src="{{ url_for('static', filename='images/fox_running.png') }}" alt="Running Fox" class="running-mascot">
+</div>
+
+<div class="loading-container">
+    <div class="loading-content">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+        </div>
+
+        <h1 class="loading-title">
+            {% if analysis_type == 'linkedin' %}
+            💼 Analyzing Your LinkedIn Profile
+            {% else %}
+            🔍 Analyzing Your Resume
+            {% endif %}
+        </h1>
+
+        <p class="loading-message" id="loadingMessage">
+            {% if analysis_type == 'linkedin' %}
+            Analyzing your LinkedIn profile for optimization...
+            {% else %}
+            Analyzing your resume for hidden strengths…
+            {% endif %}
+        </p>
+
+        <div class="loading-progress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const analysisType = "{{ analysis_type or 'resume' }}";
+
+    const resumeMessages = [
+        "Analyzing your resume for hidden strengths…",
+        "Matching your skills with the perfect role…",
+        "Optimizing your resume for recruiter attention…",
+        "Checking ATS compatibility, please hold tight…",
+        "Highlighting your achievements in progress…"
+    ];
+
+    const linkedinMessages = [
+        "Analyzing your LinkedIn profile for optimization...",
+        "Calculating your profile score and visibility...",
+        "Identifying keyword opportunities...",
+        "Generating section-by-section feedback...",
+        "Comparing to industry standards...",
+        "Preparing actionable improvements..."
+    ];
+
+    const messages = analysisType === 'linkedin' ? linkedinMessages : resumeMessages;
+
+    let currentIndex = 0;
+    const messageElement = document.getElementById('loadingMessage');
+    const progressBar = document.getElementById('progressBar');
+
+    // Rotate messages every 2 seconds
+    function rotateMessage() {
+        currentIndex = (currentIndex + 1) % messages.length;
+        messageElement.style.opacity = '0';
+
+        setTimeout(() => {
+            messageElement.textContent = messages[currentIndex];
+            messageElement.style.opacity = '1';
+        }, 300);
+    }
+
+    // Start message rotation
+    setInterval(rotateMessage, 2000);
+
+    // Animate progress bar
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 90) {
+            progress = 90; // Stop at 90% until actually done
+        }
+        progressBar.style.width = progress + '%';
+    }, 300);
+
+    // Redirect to analysis results after a short delay
+    setTimeout(() => {
+        if (analysisType === 'linkedin') {
+            window.location.href = "{{ url_for('linkedin.process') }}";
+        } else {
+            window.location.href = "{{ url_for('dashboard.analyze') }}";
+        }
+    }, 2000);
+</script>
+
+<style>
+    .loading-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 80vh;
+        padding: 20px;
+    }
+
+    .loading-content {
+        text-align: center;
+        max-width: 500px;
+    }
+
+    .loading-spinner {
+        margin-bottom: 30px;
+    }
+
+    .spinner {
+        border: 4px solid rgba(99, 102, 241, 0.1);
+        border-top: 4px solid var(--primary);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading-title {
+        font-size: 2rem;
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 20px;
+    }
+
+    .loading-message {
+        font-size: 1.1rem;
+        color: var(--text-secondary);
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: opacity 0.3s ease;
+    }
+
+    .loading-progress {
+        width: 100%;
+        height: 6px;
+        background: var(--bg-dark);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 30px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: var(--gradient-1);
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 10px;
+    }
+
+    /* Running Mascot Animation */
+    .running-mascot-container {
+        position: fixed;
+        bottom: 20px;
+        left: -150px;
+        z-index: 1000;
+        animation: runAcross 4s linear infinite;
+    }
+
+    .running-mascot {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        animation: foxBounce 0.5s ease-in-out infinite;
+    }
+
+    @keyframes runAcross {
+        0% {
+            left: -150px;
+        }
+
+        100% {
+            left: calc(100% + 150px);
+        }
+    }
+
+    @keyframes foxBounce {
+
+        0%,
+        100% {
+            transform: translateY(0) scaleX(-1);
+        }
+
+        50% {
+            transform: translateY(-10px) scaleX(-1);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .running-mascot {
+            width: 80px;
+            height: 80px;
+        }
+
+        .running-mascot-container {
+            bottom: 10px;
+        }
+    }
+</style>
+{% endblock %}

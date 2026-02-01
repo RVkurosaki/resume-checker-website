@@ -1,0 +1,9 @@
+flask
+flask-sqlalchemy
+openai
+pypdf2
+python-dotenv
+werkzeug
+beautifulsoup4
+requests
+lxml
